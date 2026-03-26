@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-const api = axios.create({ baseURL: 'http://localhost:8000/api' })
+const BASE_URL = 'https://hirehub-production-7584.up.railway.app/api'
+
+const api = axios.create({
+  baseURL: BASE_URL
+})
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
@@ -16,7 +20,7 @@ api.interceptors.response.use(
       original._retry = true
       try {
         const refresh = localStorage.getItem('refresh_token')
-        const { data } = await axios.post('http://localhost:8000/api/auth/token/refresh/', { refresh })
+        const { data } = await axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh })
         localStorage.setItem('access_token', data.access)
         original.headers.Authorization = `Bearer ${data.access}`
         return api(original)
